@@ -10,7 +10,7 @@
 
 This will be a MERN stack application to track the score during a board game.
 
-This project is still in progress!  Currently the API functionality seems good.  I need to write the frontend component to finish this up.
+This project is still in progress!  Please feel free to contribute!
 
 # Dev environemnt
 
@@ -21,8 +21,8 @@ This project is still in progress!  Currently the API functionality seems good. 
 # Production environment
 
 * Docker
-* Docker-compose
-* x86 based host
+* docker-compose
+* x86 based host (ARMv7 for my rpi will come at the end)
 
 `docker-compose up -d`
 
