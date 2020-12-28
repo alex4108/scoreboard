@@ -1,0 +1,21 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo
+    restart: always
+    volumes:
+      - ./mongo-data:/data/db
+    ports:
+      - 27017:27017
+  backend:
+    depends_on:
+      - mongodb
+    image: alex4108/scoreboard-backend
+    restart: always
+    links:
+      - mongodb
+    ports:
+      - 8080:8080
+    environment:
+      mongoHost: mongodb
+      mongoPort: 27017
