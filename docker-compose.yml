@@ -19,12 +19,14 @@ services:
     environment:
       mongoHost: mongodb
       mongoPort: 27017
+      corsEndpoint: "http://localhost"
   frontend:
     depends_on:
       - backend
     image: alex4108/scoreboard-frontend
     restart: always
     ports:
-      - 3000:80
+      - 80:80
     environment:
       apiEndpoint: "localhost:8080"
+      

@@ -1,4 +1,4 @@
-FROM node:14.4.0
+FROM node:14.4.0-alpine
 ENV PORT 8080
 EXPOSE 8080
 RUN mkdir /app

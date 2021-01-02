@@ -8,17 +8,23 @@
 ![GitHub All Releases](https://img.shields.io/github/downloads/alex4108/scoreboard/total)
 ![Docker Pulls](https://img.shields.io/docker/pulls/alex4108/scoreboard-backend)
 
-This will be a MERN stack application to track the score during a board game.
+This is a super simple "Scoreboard" app that lets us keep track of players and their scores while we're playing a game.  It persists player information between games and persists match history.  
 
-This project is still in progress!  Please feel free to contribute!
+As I get better with the MERN stack, this will get updated.
 
-# Dev environemnt
+# Demo
 
-* Node 14
-* React frontend (TODO)
+[YouTube Video](https://www.youtube.com/watch?v=L2Wkm76MCLY)
+
+# Environment Notes
+
+## Dev environemnt
+
+* Backend: Node 14 / Express (`cd backend && node server.js`)
+* Frontend: Node 14 / React 17 (`cd frontend && yarn start`)
 * MongoDB 4.4 (`docker run --name mongodb-scoreboard -p 27017:27017 mongo`)
 
-# Production environment
+## Production environment
 
 * Docker
 * docker-compose
@@ -26,7 +32,9 @@ This project is still in progress!  Please feel free to contribute!
 
 `docker-compose up -d`
 
-# Players API Usage
+# API Usage
+
+## Players API Usage
 
 ### Create a player profile
 
@@ -47,7 +55,7 @@ curl -X GET http://localhost:8080/api/player/{id} -H "Content-Type: application/
 ```
 
 
-# Scoreboards API Usage
+## Scoreboards API Usage
 
 ### Create a new Scoreboard
 ```
@@ -90,6 +98,8 @@ curl -X GET http://localhost:8080/api/player/{id} -H "Content-Type: application/
  -d '{"score": 10} \ 
  -H "Content-Type: application/json"
 ```
+
+
 
 
 # Contributing
