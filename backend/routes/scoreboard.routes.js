@@ -8,12 +8,12 @@ module.exports = app => {
   
     // Retrieve all Scoreboards
     router.get("/", scoreboards.findAll);
-  
+
     // Start a game
-    router.post("/:id/start", scoreboards.start);
+    router.get("/:id/start", scoreboards.start);
     
     // End a game
-    router.post("/:id/end", scoreboards.end);
+    router.get("/:id/end", scoreboards.end);
     
     // Retrieve a single Scoreboard with id
     router.get("/:id", scoreboards.findOne);

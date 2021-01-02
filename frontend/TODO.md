@@ -3,18 +3,12 @@
 ## Scoreboards
 
 ### List
-* When I list scoreboards, I should be presented a button to add a new one
 * When I list scoreboards, I should default to filter only active games
-* When I click on a scoreboard from the list, I should open to the Scoreboard single view
-
-### Add/Edit
-* When adding or editing a scoreboard, I should be able to set the Name and Players
-* Closed games should not be editable
-* Started games cannot add or remove players
 
 ### Single View
 * When in a single scoreboard view, I should be shown the players and their points
 * A "live view" toggle, if the game is open
+* If a game is not started, I should be able to edit the players
 
 ### Ref View
 * I should be able to add/subtract points from a player
@@ -30,7 +24,6 @@ It'll refresh the state every second for "live"ness
 If the game closes, live view will toggle off
 
 ## Players
-
 Players cannot be removed once added, and their names are finalized.
 
 ### List

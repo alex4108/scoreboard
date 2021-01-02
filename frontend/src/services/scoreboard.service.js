@@ -13,10 +13,15 @@ class ScoreboardDataService {
     return http.post("/scoreboard", data);
   }
 
-/*
-  update(id, data) {
-    return http.put(`/player/${id}`, data);
+
+  start(id) {
+    return http.get("/scoreboard/" + id + "/start");
   }
+
+  end(id) { 
+    return http.get("/scoreboard/" + id + "/end");
+  }
+/*
   delete(id) {
     return http.delete(`/player/${id}`);
   }

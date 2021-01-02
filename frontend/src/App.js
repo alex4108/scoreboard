@@ -6,7 +6,10 @@ import React, { Component } from "react";
 import { Switch, Route, Link } from "react-router-dom";
 import PlayerList from './components/list-player.component';
 import AddPlayer from './components/add-player.component';
+import AddScoreboard from './components/add-scoreboard.component';
 import ScoreboardList from './components/list-scoreboard.component';
+import ScoreboardSingle from './components/single-scoreboard.component';
+import ScoreboardPlayers from './components/edit-players.component';
 
 class App extends Component {
   render() {
@@ -30,6 +33,9 @@ class App extends Component {
             <Route exact path={["/players"]} component={PlayerList} />
             <Route exact path={["/", "/scoreboards"]} component={ScoreboardList} />
             <Route exact path="/players/add" component={AddPlayer} />
+            <Route exact path="/scoreboards/add" component={AddScoreboard} />
+            <Route exact path="/scoreboards/info/:id" component={ScoreboardSingle} />
+            <Route exact path="/scoreboards/players/:id" component={ScoreboardPlayers} />
           </Switch>
         </div>
       </div>

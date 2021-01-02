@@ -105,7 +105,7 @@ exports.start = (req, res) => {
               } else {
                   var msg = "Game Started!"
                   console.log(msg)
-                  res.status(200).send({ message: msg });
+                  res.status(200).send({ message: msg, game: data });
               } 
         })
         .catch(err => {
@@ -130,7 +130,7 @@ exports.end = (req, res) => {
               } else {
                   var msg = "Game closed!"
                   console.log(msg)
-                  res.status(200).send({ message: msg });
+                  res.status(200).send({ message: msg, game: data });
               }
         })
         .catch(err => {

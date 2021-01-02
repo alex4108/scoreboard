@@ -77,7 +77,7 @@ export default class AddPlayer extends Component {
               />
             </div>
 
-            <button onClick={this.saveTutorial} className="btn btn-success">
+            <button onClick={this.savePlayer} className="btn btn-success">
               Submit
             </button>
           </div>
