@@ -61,6 +61,11 @@ export default class PlayerList extends Component {
           </ul>
 
         </div>
+        <div className="col-md-6">
+          <Link to={"/players/add"} className="btn btn-success">
+              New Player
+          </Link>
+        </div>
       </div>
     );
   }

@@ -3,17 +3,13 @@ import ScoreboardDataService from "../services/scoreboard.service";
 import PlayerDataService from "../services/player.service";
 import { Link } from "react-router-dom";
 
-export default class ScoreboardSingle extends Component {
+export default class ScoreboardLive extends Component {
   constructor(props) {
     super(props);
     this.retrieveScoreboard = this.retrieveScoreboard.bind(this);
     this.refreshList = this.refreshList.bind(this);
-    this.StateChangeButton = this.StateChangeButton.bind(this);
     this.startGame = this.startGame.bind(this);
     this.endGame = this.endGame.bind(this);
-    this.PlayersChangeButton = this.PlayersChangeButton.bind(this);
-    this.RefereeViewButton = this.RefereeViewButton.bind(this);
-    this.LiveViewButton = this.LiveViewButton.bind(this);
     this.state = {
       name: "",
       description: "",
@@ -22,7 +18,8 @@ export default class ScoreboardSingle extends Component {
       createdAt: "1970-01-01T00:01:00Z",
       updatedAt: "1970-01-01T00:01:00Z",
       id: "",
-      players: []
+      players: [],
+      interval: ""
     };
   }
 
@@ -30,6 +27,9 @@ export default class ScoreboardSingle extends Component {
         this.retrieveScoreboard(this.props.match.params.id)
     }
 
+    componentWillUnmount() {
+        clearInterval(this.state.interval);
+      }
 
   retrieveScoreboard(id) {
     ScoreboardDataService.get(id)
@@ -70,6 +70,11 @@ export default class ScoreboardSingle extends Component {
         else { 
             var timestampText = "Game Scheduled"
         }
+        var sortedPlayers = response.data.players.sort((a, b) => {
+            if(a.score > b.score) { return -1; }
+            if(a.score < b.score) { return 1; }
+            return 0;
+        })
 
         this.setState({
           name: response.data.name,
@@ -84,9 +89,12 @@ export default class ScoreboardSingle extends Component {
           finished: finished,
           inProgress: inProgress,
           timestamp: timestampText,
-          players: response.data.players,
+          players: sortedPlayers,
           id: id
         });
+
+        this.state.interval = setTimeout(this.retrieveScoreboard(this.props.match.params.id).bind(this), 1000);
+
       })
       .catch(e => {
         console.log(e);
@@ -95,56 +103,6 @@ export default class ScoreboardSingle extends Component {
 
   refreshList() {
     this.retrieveScoreboard(this.props.match.params.id);
-  }
-
-  StateChangeButton(e) { 
-      if (this.state.started && !this.state.finished) {
-        return <button
-        className="btn btn-warning">
-            In Progress
-       </button>
-      }
-      if (!this.state.started) { 
-        return <button
-         onClick={this.startGame}
-         className="btn btn-success">
-             Start Game
-        </button>
-      }
-      if (this.state.finished) { 
-          return <button
-          className="btn btn-secondary">
-            Game Ended
-          </button>
-      }
-  }
-
-  PlayersChangeButton(e) { 
-      if (!this.state.started) { 
-        return <Link to={"/scoreboards/players/" + this.state.id} className="btn btn-success">Edit</Link>
-      }
-      else {
-        return ""
-      }
-      
-  }
-
-  RefereeViewButton(e) { 
-    if (this.state.inProgress) { 
-      return <Link to={"/scoreboards/referee/" + this.state.id} className="btn btn-info">Referee Mode</Link>
-    }
-    else {
-      return <Link></Link>
-    }
-  }
-
-  LiveViewButton(e) { 
-    if (this.state.inProgress) { 
-      return <Link to={"/scoreboards/live/" + this.state.id} className="btn btn-info">Live Mode</Link>
-    }
-    else {
-      return <Link></Link>
-    }
   }
 
   startGame() {
@@ -178,28 +136,22 @@ export default class ScoreboardSingle extends Component {
     return (
       <div className="list row">
         <div className="col-md-6">
-          <h4 class="">{this.state.name}</h4>
+          <h4 class="">{this.state.name} (LIVE)</h4>
           <h5>{this.state.description}</h5>
           {this.state.timestamp}  
-        </div>
-        <div className="col-md-6">
-            <h5 class="">Players</h5>
-            <table border="1">
-            <thead>
-                <tr><td>Name</td><td>Score</td></tr>
-            </thead>
+        <hr />
+        <table border="1">
+        <thead>
+            <tr><td>Name</td><td>Score</td></tr>
+        </thead>
 
-            <tbody>
-                { this.state.players.map((p) => <tr><td>{p.name}</td><td>{p.score}</td></tr>) }
-            </tbody>
-            </table>
+        <tbody>
+            { this.state.players.map((p) => <tr><td>{p.name}</td><td>{p.score}</td></tr>) }
+        </tbody>
+        </table>
                 
-            <this.PlayersChangeButton />
 
         </div>
-        <this.StateChangeButton />
-        <this.RefereeViewButton />
-        <this.LiveViewButton />
       </div>
     );
   }

@@ -24,7 +24,10 @@ module.exports = app => {
     // Remove a player from the Scoreboard
     router.post("/:sid/players/:pid/remove", scoreboards.remPlayer);
   
-    // Remove a player from the Scoreboard
+    // Get player's score
+    router.get("/:sid/players/:pid/score", scoreboards.getPlayerScore);
+
+    // Update player's score
     router.post("/:sid/players/:pid/score", scoreboards.updatePlayerScore);
   
 

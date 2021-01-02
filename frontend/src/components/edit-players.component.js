@@ -1,106 +1,126 @@
 import React, { Component } from "react";
 import ScoreboardDataService from "../services/scoreboard.service";
+import PlayerDataService from "../services/player.service";
 import { Link } from "react-router-dom";
 
-export default class ScoreboardPlayers extends Component {
+export default class ScoreboardSingle extends Component {
   constructor(props) {
     super(props);
-    this.retrieveScoreboard = this.retrieveScoreboard.bind(this);
-    this.refreshList = this.refreshList.bind(this);
-
+    this.retrievePlayers = this.retrievePlayers.bind(this);
+    this.addPlayer = this.addPlayer.bind(this);
     this.state = {
-      name: "",
-      description: "",
-      started_at: "1970-01-01T00:01:00Z",
-      ended_at: "1970-01-01T00:01:00Z",
-      createdAt: "1970-01-01T00:01:00Z",
-      updatedAt: "1970-01-01T00:01:00Z",
-      id: ""
+      playersInGame: [],
+      playersNotInGame: []
     };
   }
 
-    componentDidMount() {
-        this.retrieveScoreboard(this.props.match.params.id)
-    }
+  componentDidMount() {
+      this.retrievePlayers(this.props.match.params.id)
+  }
 
-
-  retrieveScoreboard(id) {
+  retrievePlayers(id) {
     ScoreboardDataService.get(id)
-      .then(response => {
-        var startDate = new Date(response.data.started_at)
-        var endDate = new Date(response.data.ended_at)
+      .then(scoreboard => {
+        PlayerDataService.getAll().then(resp => {
+          var playersInGame = []
+          var playersNotInGame = []
+          resp.data.forEach( player => {
+            var inGame = false 
+            scoreboard.data.players.forEach( pig => {
+              if (pig.player_id === player.id) { 
+                inGame = true
+              }
+            })
+            if (inGame) { 
+              playersInGame.push({
+                name: player.name,
+                id: player.id,
+                score: 0
+              })
+            }
+            else {
+              playersNotInGame.push(player)
+            }
+          })
+          this.setState({
+            playersInGame: playersInGame,
+            playersNotInGame: playersNotInGame
+          })
 
-        var started_at_normalized = startDate.getMonth()+1 + "-" + startDate.getDate() + "-" + startDate.getFullYear()
-        var ended_at_normalized = endDate.getMonth()+1 + "-" + endDate.getDate() + "-" + endDate.getFullYear()
-
-        if (endDate < startDate || startDate == endDate || response.data.started_at == "1970-01-01T00:00:00.000Z") { 
-            var started = false;
-        }
-        else {
-            var started = true;
-        }
-
-        if (endDate == "" || response.data.ended_at == "1970-01-01T00:00:00.000Z") { 
-            var finished = false;
-        }
-        else {
-            var finished = true;
-        }
-
-        if (started && !finished) { 
-            var inProgress = true;
-        }
-        else {
-            var inProgress = false;
-        }
-
-        if (started && !finished) { 
-            var timestampText = "Game In Progress :: Started at " + started_at_normalized
-        }
-        else if (finished) { 
-            var timestampText = "Game Finished :: Finished at " + ended_at_normalized
-        }
-        else { 
-            var timestampText = "Game Scheduled"
-        }
-
-        this.setState({
-          name: response.data.name,
-          description: response.data.description,
-          started_at: response.data.started_at,
-          ended_at: response.data.ended_at,
-          started_at_real: started_at_normalized,
-          ended_at_real: ended_at_normalized,
-          createdAt: response.data.createdAt,
-          updatedAt: response.data.updatedAt,
-          started: started,
-          finished: finished,
-          inProgress: inProgress,
-          timestamp: timestampText,
-          id: id
-        });
-        console.log(response.data);
+        })
       })
       .catch(e => {
         console.log(e);
       });
   }
 
-  refreshList() {
-    this.retrieveScoreboard(this.props.match.params.id);
+  addPlayer(pid) { 
+    var playersInGame = this.state.playersInGame;
+    var playersNotInGame = this.state.playersNotInGame;
+
+    PlayerDataService.get(pid).then(player => {
+      console.log(player)
+      var pName = player.data.name
+      var newPlayer = {
+        id: pid,
+        player_id: pid,
+        name: pName,
+        score: 0
+      }
+      playersInGame.push(newPlayer)
+      playersNotInGame = playersNotInGame.filter( pnig => {
+        return pnig.id !== pid
+      })
+      ScoreboardDataService.addPlayer(this.props.match.params.id, pid)
+
+      this.setState({
+        playersInGame: playersInGame,
+        playersNotInGame: playersNotInGame
+      })
+    })
+    
   }
 
+  remPlayer(pid) { 
+    ScoreboardDataService.remPlayer(this.props.match.params.id, pid).then((response) => {
+      ScoreboardDataService.get(this.props.match.params.id).then((res) => {
+        PlayerDataService.get(pid).then((removedPlayer) => {
+          console.log(removedPlayer)
+          var playersNotInGame = this.state.playersNotInGame;
+          playersNotInGame.push({
+            id: pid,
+            name: removedPlayer.data.name
+          })
+          this.setState({
+            playersNotInGame: playersNotInGame,
+            playersInGame: res.data.players
+          })
+        })
+        
+      })
+    })
+  }
+  refreshList() {
+    this.retrievePlayers(this.props.match.params.id);
+  }
 
   render() {
     return (
-      <div className="list row">
-        <div className="col-md-6">
-          <h4 class="">Players NOT in Game</h4>
-        </div>
-        <div className="col-md-6">
-            <h4 class="">Players in Game</h4>
-        </div>
-        <Link to={"/scoreboards/info/" + this.state.id} className="btn btn-success">Save</Link>
+      <div className="list">
+        <h4>Players in Game</h4>
+        <ul className="list-unstyled">{this.state.playersInGame.map(p => <li>{p.name} <button
+        onClick={() => this.remPlayer(p.id)}
+        className="btn btn-danger">
+            Remove
+       </button> </li> )}</ul>
+        <h4>Players NOT in Game</h4>
+        <ul className="list-unstyled">{this.state.playersNotInGame.map(p => <li>{p.name} <button
+        onClick={() => this.addPlayer(p.id)}
+        className="btn btn-success">
+            Add to Game
+       </button> </li>)} </ul>
+        
+        <Link to={"/scoreboards/info/" + this.props.match.params.id} className="btn btn-info">Back</Link>
       </div>
     );
   }

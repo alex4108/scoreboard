@@ -10,6 +10,8 @@ import AddScoreboard from './components/add-scoreboard.component';
 import ScoreboardList from './components/list-scoreboard.component';
 import ScoreboardSingle from './components/single-scoreboard.component';
 import ScoreboardPlayers from './components/edit-players.component';
+import ScoreboardRef from './components/ref-scoreboard.component';
+import ScoreboardLive from './components/live-scoreboard.component';
 
 class App extends Component {
   render() {
@@ -36,6 +38,8 @@ class App extends Component {
             <Route exact path="/scoreboards/add" component={AddScoreboard} />
             <Route exact path="/scoreboards/info/:id" component={ScoreboardSingle} />
             <Route exact path="/scoreboards/players/:id" component={ScoreboardPlayers} />
+            <Route exact path="/scoreboards/referee/:id" component={ScoreboardRef} />
+            <Route exact path="/scoreboards/live/:id" component={ScoreboardLive} />
           </Switch>
         </div>
       </div>

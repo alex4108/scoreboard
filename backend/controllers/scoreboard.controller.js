@@ -1,5 +1,6 @@
 const db = require("../models");
 const Scoreboard = db.Scoreboard;
+const Player = db.Player;
 
 // Create and Save a new Scoreboard
 exports.create = (req, res) => {
@@ -56,9 +57,12 @@ exports.findOne = (req, res) => {
 
     Scoreboard.findById(id)
         .then(data => {
-        if (!data)
+        if (!data) {
             res.status(404).send({ message: "Not found Scoreboard with id " + id });
-        else res.send(data);
+        }
+        else {
+            res.send(data);
+        }
         })
         .catch(err => {
         res
@@ -66,29 +70,6 @@ exports.findOne = (req, res) => {
             .send({ message: "Error retrieving Scoreboard with id=" + id });
         });
 };
-
-/*
-// Update a Scoreboard by the id in the request
-exports.update = (req, res) => {
-  
-};
-
-// Delete a Scoreboard with the specified id in the request
-exports.delete = (req, res) => {
-  
-};
-
-// Delete all Scoreboard from the database.
-exports.deleteAll = (req, res) => {
-  
-};
-
-// Find all published Scoreboard
-exports.findAllPublished = (req, res) => {
-  
-};
-
-*/
 
 exports.start = (req, res) => { 
     const id = req.params.id;
@@ -163,37 +144,45 @@ exports.addPlayer = (req, res) => {
             })
 
             if (updateList) { 
-                playerEntry = { 
-                    player_id: pid,
-                    score: 0
-                }
-                players.push(playerEntry)
-                const body = { 
-                    players: players
-                }
-                Scoreboard.findByIdAndUpdate(sid, body, { useFindAndModify: false})
-                .then(data => {
-                    if (!data) {
-                        res.status(404).send({
-                        message: `Cannot update Scoreboard with id=${sid}. Maybe Scoreboard was not found!`
-                        });
-                    } else { 
-                        console.log("Success")
-                        res.status(200).send({ message: "Added player!" })
+                console.log("updateList")
+                var pName = ""
+                Player.findById(pid).then( pData => { 
+                    pName = pData.name
+                    console.log(pName)
+                    playerEntry = { 
+                        player_id: pid,
+                        name: pName,
+                        score: 0
                     }
-                })
-                .catch(err => {
-                    res.status(500).send({
-                    message: "Error updating Scoreboard with id=" + sid
+                    players.push(playerEntry)
+                    const body = { 
+                        players: players
+                    }
+                    Scoreboard.findByIdAndUpdate(sid, body, { useFindAndModify: false})
+                    .then(data => {
+                        if (!data) {
+                            res.status(404).send({
+                            message: `Cannot update Scoreboard with id=${sid}. Maybe Scoreboard was not found!`
+                            });
+                        } else { 
+                            console.log("Success")
+                            res.status(200).send({ message: "Added " + pName + "!" })
+                        }
+                    })
+                    .catch(err => {
+                        res.status(500).send({
+                        message: "Error updating Scoreboard with id=" + sid
+                        });
                     });
-                });
+                })
+                
             }
         }
         })
         .catch(err => {
         res
             .status(500)
-            .send({ message: "Error retrieving Scoreboard with id=" + id });
+            .send({ message: "Error retrieving Scoreboard with id=" + sid });
         });
 };
 
@@ -250,6 +239,35 @@ exports.remPlayer = (req, res) => {
         });
 };
 
+exports.getPlayerScore = (req, res) => {
+    const sid = req.params.sid;
+    const pid = req.params.pid;
+    console.log("Fetching player score for pid :: " + pid + " in sid :: " + sid)
+
+    Scoreboard.findById(sid).then(data => {
+        if (!data) {
+            res.status(404).send({ message: "Not found Scoreboard with id " + sid });
+        }
+        else {
+            var players = data.players
+            var found = false
+            players.forEach((player) => {
+                if (player.player_id == pid) { 
+                    found = true
+                    res.status(200).send({
+                        score: player.score
+                    });
+                }
+            })
+            if (!found) { 
+                res.status(404).send({
+                    message: "Cannot find player with ID " + pid
+                })
+            }
+        }
+    })
+};
+
 exports.updatePlayerScore = (req, res) => {
     const sid = req.params.sid;
     const pid = req.params.pid;
@@ -272,6 +290,7 @@ exports.updatePlayerScore = (req, res) => {
                 var newPlayerList = players.filter( x => x.player_id != pid);
                 const newPlayerEntry = { 
                     player_id: pid,
+                    name: playerEntry.name,
                     score: newScore
                 }
                 newPlayerList.push(newPlayerEntry)

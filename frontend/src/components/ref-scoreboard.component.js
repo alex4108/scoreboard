@@ -3,7 +3,7 @@ import ScoreboardDataService from "../services/scoreboard.service";
 import PlayerDataService from "../services/player.service";
 import { Link } from "react-router-dom";
 
-export default class ScoreboardSingle extends Component {
+export default class ScoreboardRef extends Component {
   constructor(props) {
     super(props);
     this.retrieveScoreboard = this.retrieveScoreboard.bind(this);
@@ -14,6 +14,9 @@ export default class ScoreboardSingle extends Component {
     this.PlayersChangeButton = this.PlayersChangeButton.bind(this);
     this.RefereeViewButton = this.RefereeViewButton.bind(this);
     this.LiveViewButton = this.LiveViewButton.bind(this);
+    this.addPoint = this.addPoint.bind(this);
+    this.subPoint = this.subPoint.bind(this);
+
     this.state = {
       name: "",
       description: "",
@@ -71,6 +74,12 @@ export default class ScoreboardSingle extends Component {
             var timestampText = "Game Scheduled"
         }
 
+        var sortedPlayers = response.data.players.sort((a, b) => {
+            if(a.name < b.name) { return -1; }
+            if(a.name > b.name) { return 1; }
+            return 0;
+        })
+
         this.setState({
           name: response.data.name,
           description: response.data.description,
@@ -84,7 +93,7 @@ export default class ScoreboardSingle extends Component {
           finished: finished,
           inProgress: inProgress,
           timestamp: timestampText,
-          players: response.data.players,
+          players: sortedPlayers,
           id: id
         });
       })
@@ -100,8 +109,9 @@ export default class ScoreboardSingle extends Component {
   StateChangeButton(e) { 
       if (this.state.started && !this.state.finished) {
         return <button
-        className="btn btn-warning">
-            In Progress
+        onClick={this.endGame}
+        className="btn btn-danger">
+            End Game
        </button>
       }
       if (!this.state.started) { 
@@ -124,7 +134,10 @@ export default class ScoreboardSingle extends Component {
         return <Link to={"/scoreboards/players/" + this.state.id} className="btn btn-success">Edit</Link>
       }
       else {
-        return ""
+        return <button
+        className="btn btn-secondary">
+            Locked
+       </button>
       }
       
   }
@@ -147,6 +160,7 @@ export default class ScoreboardSingle extends Component {
     }
   }
 
+
   startGame() {
     ScoreboardDataService.start(
         this.state.id
@@ -161,45 +175,94 @@ export default class ScoreboardSingle extends Component {
   }
 
   endGame() { 
-    ScoreboardDataService.end(
-        this.state.id
-    ).then(response => {
-        this.setState({
-            finished: true,
-            inProgress: false,
-            ended_at: response.data.game.ended_at
+    if (window.confirm("Are you sure you wish to end this game?")) { 
+        ScoreboardDataService.end(
+            this.state.id
+        ).then(response => {
+            this.setState({
+                finished: true,
+                inProgress: false,
+                ended_at: response.data.game.ended_at
+            })
+            this.refreshList()
         })
-        this.refreshList()
+    }
+  }
+
+  addPoint(pid) { 
+    ScoreboardDataService.getScore(this.props.match.params.id, pid).then( (resp) => {
+        console.log("OLD SCORE: " + resp.data.score)
+        var score = resp.data.score;
+        ScoreboardDataService.updateScore(this.props.match.params.id, pid, score+1).then( (response) => {
+            ScoreboardDataService.get(this.props.match.params.id).then( (updatedScoreboard) => {
+                
+                var updatedPlayers = updatedScoreboard.data.players.sort((a, b) => {
+                    if(a.name < b.name) { return -1; }
+                    if(a.name > b.name) { return 1; }
+                    return 0;
+                })
+                this.setState({
+                    players: updatedPlayers
+                })
+            })
+            
+        })        
+    })
+    
+  }
+
+  subPoint(pid) { 
+    ScoreboardDataService.getScore(this.props.match.params.id, pid).then( (resp) => {
+        var score = resp.data.score;
+        ScoreboardDataService.updateScore(this.props.match.params.id, pid, score-1).then( (response) => {
+            ScoreboardDataService.get(this.props.match.params.id).then( (updatedScoreboard) => {
+                
+                var updatedPlayers = updatedScoreboard.data.players.sort((a, b) => {
+                    if(a.name < b.name) { return -1; }
+                    if(a.name > b.name) { return 1; }
+                    return 0;
+                })
+                this.setState({
+                    players: updatedPlayers
+                })
+            })
+            
+        })        
     })
   }
 
-
   render() {
+    var players = this.state.players.map((p) => <tr><td>{p.name}</td><td>{p.score}</td><td><button
+    onClick={() => this.addPoint(p.player_id)}
+    className="btn btn-success">
+        +
+   </button></td>
+    <td><button
+        onClick={() => this.subPoint(p.player_id)}
+        className="btn btn-danger">
+            -
+       </button></td></tr>)
+
     return (
       <div className="list row">
         <div className="col-md-6">
-          <h4 class="">{this.state.name}</h4>
+          <h4 className="">{this.state.name}</h4>
           <h5>{this.state.description}</h5>
-          {this.state.timestamp}  
-        </div>
-        <div className="col-md-6">
-            <h5 class="">Players</h5>
-            <table border="1">
-            <thead>
-                <tr><td>Name</td><td>Score</td></tr>
-            </thead>
+          {this.state.timestamp}<br />
+          <this.StateChangeButton />
+            <br />
+            <br />
+        <h5 className="">Players</h5>
+        <table border="1">
+        <thead>
+            <tr><td>Name</td><td>Score</td><td></td><td></td></tr>
+        </thead>
 
-            <tbody>
-                { this.state.players.map((p) => <tr><td>{p.name}</td><td>{p.score}</td></tr>) }
-            </tbody>
-            </table>
-                
-            <this.PlayersChangeButton />
-
+        <tbody>
+            { players }
+        </tbody>
+        </table> 
         </div>
-        <this.StateChangeButton />
-        <this.RefereeViewButton />
-        <this.LiveViewButton />
       </div>
     );
   }

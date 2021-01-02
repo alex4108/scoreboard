@@ -71,7 +71,7 @@ export default class ScoreboardList extends Component {
 
         </div>
         <div className="col-md-6">
-          <Link to={"/scoreboards/add"} className="nav-link">
+          <Link to={"/scoreboards/add"} className="btn btn-success">
               New Game
           </Link>
         </div>

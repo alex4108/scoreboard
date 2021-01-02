@@ -9,6 +9,7 @@ module.exports = mongoose => {
           ended_at: Date,
           players: [
               {
+                name: String,
                 player_id: { type: mongoose.Schema.Types.ObjectId }, // TODO Enforce link to Player model
                 score: Number
               }
