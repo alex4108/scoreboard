@@ -36,7 +36,7 @@ You can seed a test database with some sample data by running `bash backend/test
 
 * Docker
 * docker-compose
-* Supports docker engines for `linux/amd64` and `linux/arm/v7` architectures.  You can see my [notes]() and [frontend/build.sh]() or [backend/build.sh]() for how I set this up using [Travis-CI](https://travis-ci.com)
+* Supports docker engines for `linux/amd64` and `linux/arm/v7` architectures.  You can see my [notes](https://github.com/alex4108/scoreboard/issues/1) and [frontend/build.sh](https://github.com/alex4108/scoreboard/blob/main/frontend/build.sh) or [backend/build.sh](https://github.com/alex4108/scoreboard/blob/main/backend/build.sh) for how I set this up using [Travis-CI](https://travis-ci.com)
 
 `docker-compose up -d`
 
