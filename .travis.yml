@@ -8,4 +8,5 @@ script:
   - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
   - sudo systemctl restart docker
   - echo "$(docker version -f '{{.Server.Experimental}}')"
-  - DOCKER_CLI_EXPERIMENTAL=enabled bash build.sh
+  - echo "$(docker buildx --help)"
+#  - DOCKER_CLI_EXPERIMENTAL=enabled bash build.sh
