@@ -4,9 +4,6 @@ branches:
     only:
         - main
 script:
-  - echo "Logging in as ${DOCKER_USER}"
   - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
-  - echo "Checking if docker experimental is enabled"
   - echo "$(docker version -f '{{.Server.Experimental}}')"
-  - export DOCKER_CLI_EXPERIMENTAL=enabled
-  - bash build.sh
+  - DOCKER_CLI_EXPERIMENTAL=enabled bash build.sh
