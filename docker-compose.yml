@@ -18,7 +18,7 @@ services:
       - 8080:8080
     environment:
       mongoConnectionString: mongodb://mongodb:27017/scoreboard
-      corsEndpoint: "*"
+      corsOrigin: "*"
   frontend:
     depends_on:
       - backend

@@ -4,7 +4,7 @@ const cors = require("cors");
 const app = express();
 
 var corsOptions = {
-  origin: process.env.corsEndpoint || "http://localhost:3000"
+  origin: process.env.corsOrigin || "http://localhost:3000"
 };
 
 app.use(cors(corsOptions));
