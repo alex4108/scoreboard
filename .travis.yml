@@ -4,6 +4,8 @@ branches:
     only:
         - main
 before_install:
+  - sudo apt purge --auto-remove qemu-user qemu-user-binfmt binfmt-support
+  - sudo apt install qemu-user
   - sudo rm -rf /var/lib/apt/lists/*
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
   - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) edge"
