@@ -5,7 +5,6 @@
 [![GitHub stars](https://img.shields.io/github/stars/alex4108/scoreboard)](https://github.com/alex4108/scoreboard/stargazers)
 ![GitHub contributors](https://img.shields.io/github/contributors/alex4108/scoreboard)
 [![GitHub license](https://img.shields.io/github/license/alex4108/scoreboard)](https://github.com/alex4108/scoreboard/blob/master/LICENSE)
-![GitHub All Releases](https://img.shields.io/github/downloads/alex4108/scoreboard/total)
 ![Docker Pulls](https://img.shields.io/docker/pulls/alex4108/scoreboard-backend)
 [![Build Status](https://travis-ci.com/alex4108/scoreboard.svg?branch=main)](https://travis-ci.com/alex4108/scoreboard)
 
