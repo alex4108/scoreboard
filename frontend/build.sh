@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 set -x
 
-docker build -t alex4108/scoreboard-frontend .
-docker push alex4108/scoreboard-frontend
+docker buildx create --use
+docker buildx build --platform linux/amd64,linux/arm/v7 -t alex4108/scoreboard-frontend . --push
