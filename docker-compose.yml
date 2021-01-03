@@ -17,7 +17,7 @@ services:
     ports:
       - 8080:8080
     environment:
-      mongoConnectionString: "mongodb://mongodb:27017/scoreboard"
+      mongoConnectionString: mongodb://mongodb:27017/scoreboard
   frontend:
     depends_on:
       - backend
