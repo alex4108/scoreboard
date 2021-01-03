@@ -5,8 +5,7 @@ branches:
         - main
 script:
   - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
-  - sudo apt-get -y update
-  - sudo apt-get -y install jq
-  - cat <<< $(jq '.+{"experimental":"enabled"}' ~/.docker/config.json) > ~/.docker/config.json
+  - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
+  - sudo systemctl restart docker
   - echo "$(docker version -f '{{.Server.Experimental}}')"
   - DOCKER_CLI_EXPERIMENTAL=enabled bash build.sh
