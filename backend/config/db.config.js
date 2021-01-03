@@ -1,7 +1,6 @@
 
-const mongoHost = process.env.mongoHost || "localhost";
-const mongoPort = process.env.mongoPort || 27017;
+const mongoConnectionString = process.env.mongoConnectionString || "mongodb://localhost:27017/scoreboard";
 
 module.exports = {
-    url: "mongodb://" + mongoHost + ":" + mongoPort + "/scoreboard"
+    url: mongoConnectionString
 };
