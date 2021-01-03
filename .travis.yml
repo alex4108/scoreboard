@@ -3,10 +3,14 @@ language: bash
 branches:
     only:
         - main
-script:
-  - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+before_install:
+  - mkdir -vp ~/.docker/cli-plugins/
+  - curl --silent -L "https://github.com/docker/buildx/releases/download/v0.3.0/buildx-v0.3.0.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
+  - chmod a+x ~/.docker/cli-plugins/docker-buildx
   - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
   - sudo systemctl restart docker
+script:
+  - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
   - echo "$(docker version -f '{{.Server.Experimental}}')"
   - echo "$(docker buildx --help)"
-#  - DOCKER_CLI_EXPERIMENTAL=enabled bash build.sh
+  - bash build.sh
