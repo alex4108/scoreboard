@@ -1,0 +1,35 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo
+    restart: always
+    volumes:
+      - ./mongo-data:/data/db
+    ports:
+      - 27017:27017
+  backend:
+    depends_on:
+      - mongodb
+    image: alex4108/scoreboard-backend
+    restart: always
+    links:
+      - mongodb
+    ports:
+      - 8080:8080
+    environment:
+      mongoConnectionString: mongodb://mongodb:27017/scoreboard
+      corsOrigin: "*"
+      tls: 1
+    volumes:
+      - ./certs/:/app/certs/
+  frontend:
+    depends_on:
+      - backend
+    image: alex4108/scoreboard-frontend
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./certs/:/etc/nginx/certs/
+      - ./frontend/nginx/:/etc/nginx/conf.d/
