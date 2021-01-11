@@ -24,13 +24,21 @@ This is a super simple "Scoreboard" app that lets us keep track of players and t
 * Frontend: Node 14 / React 17 (`cd frontend && yarn start`)
 * MongoDB 4.4 (`docker run --name mongodb-scoreboard -p 27017:27017 mongo`)
 
-#### First time setup
+### First time setup
 
 1. Ensure you have Node 14 installed.  I recommend [using nvm](https://github.com/nvm-sh/nvm#install--update-script) if you don't already.
 1. Ensure you have yarn package manager installed.  [Instructions here](https://classic.yarnpkg.com/en/docs/install).
 1. Install node_modules: `cd backend && npm install && cd ../frontend && yarn install`
 
 You can seed a test database with some sample data by running `bash backend/tests.sh`
+
+### Development (TLS)
+
+1. Place your Certificate at `./certs/sslCert.pem`
+1. Place your Key file at `./certs/sslKey.pem`
+1. Start the server in with dev and tls flags: `dev=1 tls=1 node server.js`
+
+The server will indicate it is started with HTTPS enabled: `HTTPS Server running on port ${PORT}`
 
 ## Production
 
@@ -40,9 +48,17 @@ You can seed a test database with some sample data by running `bash backend/test
 
 `docker-compose up -d`
 
+### Production (TLS)
+
+1. Place your Certificate at `./certs/sslCert.pem`
+1. Place your Key file at `./certs/sslKey.pem`
+1. Start the docker-compose-ssl.yml file: `docker-compose -f docker-compose-ssl.yml up -d`
+
+When using TLS, the `frontend/nginx/` configuration file is used in place of nginx's default.
+
 #### linux/arm/v7 & mongodb do not agree
 
-Currently, MongoDB's container on [dockerhub](https://hub.docker.com/_/mongo) doesn't support `linux/arm/v7` architecture.  You can work around this by using [MongoDB Atlas]() free tier to run an online MongoDB cluster.  **Be sure to set up Network Security rules that secure your cluster!**
+Currently, MongoDB's container on [dockerhub](https://hub.docker.com/_/mongo) doesn't support `linux/arm/v7` architecture.  You can work around this by using [MongoDB Atlas](https://atlas.mongodb.com) free tier to run an online MongoDB cluster.  **Be sure to set up Network Security rules that secure your cluster!**
 
 From a high level, you'll need to modify your `docker-compose.yml` to:
 * Do not run a mongodb container
@@ -58,6 +74,8 @@ The Express backend takes a couple of environment variables
 
 * `corsOrigin`: The intended CORS origin for your backend.  Defaults to `http://localhost:3000`.  
 * `mongoConnectionString`: The MongoDB connection string.  Defaults to `mongodb://localhost:27017/scoreboard`.  
+* `tls` : If set, the server will start with HTTPS forced.
+* `dev` : If set, the server will use development paths when loading the certificate and key used for HTTPS.
 
 # API Usage
 
