@@ -66,6 +66,16 @@ From a high level, you'll need to modify your `docker-compose.yml` to:
 
 I use this method for running my production environment on my RaspberryPi 2.  Feel free to raise an issue if you want help or direction configuring this environment.
 
+# Frontend
+
+## Environment Variables
+
+#### Optional Environment Variables
+
+* `apiEndpoint`: By default, the frontend assumes the api endpoint to be available on port 8080 of the same server serving the frontend.  This endpoint overrides it, `/api` is included automatically.
+
+# Backend
+
 ## Environment Variables
 
 The Express backend takes a couple of environment variables
