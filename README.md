@@ -19,9 +19,11 @@ This is a super simple "Scoreboard" app that lets us keep track of players and t
 
 ## Development
 
-* Backend: Node 14 / Express (`cd backend && node server.js`)
-* Frontend: Node 14 / React 17 (`cd frontend && yarn start`)
+* Backend: Node 14 / Express (`cd backend && node server.js`) / Starts on http://localhost:8080/api/
+* Frontend: Node 14 / React 17 (`cd frontend && yarn start`) / Starts on http://localhost:3000/
 * MongoDB 4.4 (`docker run --name mongodb-scoreboard -p 27017:27017 mongo`)
+
+When starting the frontend from `yarn`, the environment variable `NODE_ENV` is set to `development`.  When this is set, the frontend will expect the API to be exposed on port 8080.  In production, `NODE_ENV=production`, so 8080 is not expected, as an nginx reverse proxy configuration is used to serve requests to the API over the web server's port (80 or 443).
 
 ### First time setup
 
@@ -35,9 +37,11 @@ You can seed a test database with some sample data by running `bash backend/test
 
 1. Place your Certificate at `./certs/sslCert.pem`
 1. Place your Key file at `./certs/sslKey.pem`
-1. Start the server in with dev and tls flags: `dev=1 tls=1 node server.js`
+1. Start the backend with dev and tls flags: `dev=1 tls=1 node server.js`
+1. Start the frontend in dev mode: `HTTPS=true yarn start`
 
 The server will indicate it is started with HTTPS enabled: `HTTPS Server running on port ${PORT}`
+Yarn will start a development server on [https://localhost:3000](https://localhost:3000)
 
 ## Production
 
@@ -45,15 +49,17 @@ The server will indicate it is started with HTTPS enabled: `HTTPS Server running
 * docker-compose
 * Supports docker engines for `linux/amd64` and `linux/arm/v7` architectures.  You can see my [notes](https://github.com/alex4108/scoreboard/issues/1) and [frontend/build.sh](https://github.com/alex4108/scoreboard/blob/main/frontend/build.sh) or [backend/build.sh](https://github.com/alex4108/scoreboard/blob/main/backend/build.sh) for how I set this up using [Travis-CI](https://travis-ci.com)
 
-`docker-compose up -d`
+By default, the container uses the configuration from `frontend/nginx/`.  The application will require port 80 to be available, however this can be modified in the docker-compose file to meet your needs.
+
+`bash run-production.sh` (requires root or member of "docker" group)
 
 ### Production (TLS)
 
+When using TLS, the `frontend/nginx-ssl/` configuration file is used in place of nginx's default.  Additionally, port 443 will be used to serve HTTPS, and 80 will be configured to redirect to HTTPS.
+
 1. Place your Certificate at `./certs/sslCert.pem`
 1. Place your Key file at `./certs/sslKey.pem`
-1. Start the docker-compose-ssl.yml file: `docker-compose -f docker-compose-ssl.yml up -d`
-
-When using TLS, the `frontend/nginx/` configuration file is used in place of nginx's default.
+1. Start the docker-compose-ssl.yml file: `bash run-production-tls.sh`
 
 #### linux/arm/v7 & mongodb do not agree
 
@@ -65,17 +71,16 @@ From a high level, you'll need to modify your `docker-compose.yml` to:
 
 I use this method for running my production environment on my RaspberryPi 2.  Feel free to raise an issue if you want help or direction configuring this environment.
 
-# Frontend
+# Frontend Environment Variables
 
-## Environment Variables
+* `NODE_ENV`: Set automatically.  [See here](https://create-react-app.dev/docs/adding-custom-environment-variables/)
 
 #### Optional Environment Variables
 
-* `apiEndpoint`: By default, the frontend assumes the api endpoint to be available on port 8080 of the same server serving the frontend.  This endpoint overrides it, `/api` is included automatically.
+* `apiEndpoint`: By default, the frontend assumes the api endpoint to be available on the same host in the /api path of the same server serving the frontend.  This endpoint overrides it, however `/api` is included automatically.
+* `dev`: If apiEndpoint is not set, and this flag is, the frontend will use port 8080 to communicate with the backend.
 
-# Backend
-
-## Environment Variables
+# Backend Environment Variables
 
 The Express backend takes a couple of environment variables
 

@@ -30,6 +30,8 @@ services:
     ports:
       - 80:80
       - 443:443
+    links: 
+      - backend
     volumes:
       - ./certs/:/etc/nginx/certs/
-      - ./frontend/nginx/:/etc/nginx/conf.d/
+      - ./frontend/nginx-ssl/:/etc/nginx/conf.d/

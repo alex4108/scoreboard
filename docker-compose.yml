@@ -22,8 +22,13 @@ services:
   frontend:
     depends_on:
       - backend
+    links: 
+      - backend
     image: alex4108/scoreboard-frontend
     restart: always
     ports:
       - 80:80
+    
+    volumes:
+      - ./frontend/nginx/:/etc/nginx/conf.d/
       

@@ -8,7 +8,7 @@ const tlsKeyPath = ((!process.env.dev) ? "/app/certs/sslKey.pem" : "../certs/ssl
 const PORT = process.env.PORT || 8080;
 
 var corsOptions = {
-  origin: process.env.corsOrigin || "http://localhost:3000"
+  origin: process.env.corsOrigin || ((process.env.tls) ? "https://localhost:3000" : "http://localhost:3000" )
 };
 
 app.use(cors(corsOptions));
