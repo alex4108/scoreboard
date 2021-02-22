@@ -28,7 +28,3 @@ services:
     restart: always
     ports:
       - 80:80
-    
-    volumes:
-      - ./frontend/nginx/:/etc/nginx/conf.d/
-      

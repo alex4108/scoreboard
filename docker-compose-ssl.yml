@@ -25,7 +25,7 @@ services:
   frontend:
     depends_on:
       - backend
-    image: alex4108/scoreboard-frontend
+    image: alex4108/scoreboard-frontend-tls
     restart: always
     ports:
       - 80:80
@@ -34,4 +34,3 @@ services:
       - backend
     volumes:
       - ./certs/:/etc/nginx/certs/
-      - ./frontend/nginx-ssl/:/etc/nginx/conf.d/
