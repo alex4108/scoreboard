@@ -6,7 +6,7 @@ COPY package-lock.json ./
 RUN npm install
 COPY ./src ./src/
 COPY ./public ./public/
-COPY ./nginx/default.conf /etc/nginx/conf.d/
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 RUN npm run build
 
 FROM nginx:stable-alpine    
