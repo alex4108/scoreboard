@@ -23,7 +23,7 @@ services:
     depends_on:
       - backend
     links: 
-      - backend
+      - "backend:scoreboard-backend.default.svc.cluster.local"
     image: alex4108/scoreboard-frontend
     restart: always
     ports:

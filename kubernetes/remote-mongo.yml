@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scoreboard
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: scoreboard
+  template:
+    metadata:
+      labels:
+        name: scoreboard
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: frontend
+        image: alex4108/scoreboard-frontend:latest
+        ports:
+        - containerPort: 80
+          protocol: TCP
+      - name: backend
+        image: alex4108/scoreboard-backend:latest
+        env:
+        - name: mongoConnectionString
+          value: "mongodb+srv://FILL_THIS_IN"
+        - name: corsOrigin
+          value: "*"
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scoreboard
+spec:
+  selector:
+    name: scoreboard
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scoreboard-backend
+spec:
+  selector:
+    name: scoreboard
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+  type: LoadBalancer

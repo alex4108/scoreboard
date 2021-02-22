@@ -61,6 +61,18 @@ When using TLS, the `frontend/nginx-ssl/` configuration file is used in place of
 1. Place your Key file at `./certs/sslKey.pem`
 1. Start the docker-compose-ssl.yml file: `bash run-production-tls.sh`
 
+### Production (Kubernetes)
+
+#### In-cluster MongoDB
+
+Todo...
+
+#### Remote MongoDB
+
+In my production deployment I use [MongoDB Atlas](https://atlas.mongodb.com) to host my MongoDB cluster.  You can use the `remote-mongo.yml` file in `kubernetes/` to deploy the application to a kubernetes cluster.  
+
+Make sure to fill in the MongoDB connection string in the template prior to deploying.
+
 #### linux/arm/v7 & mongodb do not agree
 
 Currently, MongoDB's container on [dockerhub](https://hub.docker.com/_/mongo) doesn't support `linux/arm/v7` architecture.  You can work around this by using [MongoDB Atlas](https://atlas.mongodb.com) free tier to run an online MongoDB cluster.  **Be sure to set up Network Security rules that secure your cluster!**
