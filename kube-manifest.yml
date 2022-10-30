@@ -17,14 +17,15 @@ spec:
       containers:
       - name: frontend
         image: alex4108/scoreboard-frontend:GIT_SHA
+        env:
+        - name: BACKEND_HOST
+          value: scoreboard-live-backend.default.svc.cluster.local
         ports:
         - containerPort: 80
           protocol: TCP
       - name: backend
         image: alex4108/scoreboard-backend:GIT_SHA
         env:
-        - name: BACKEND_HOST
-          value: scoreboard-live-backend.default.svc.cluster.local
         - name: mongoConnectionString
           valueFrom:
             secretKeyRef:
