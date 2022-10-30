@@ -1,5 +1,7 @@
 # Scoreboard
-
+[![CodeQL](https://github.com/alex4108/scoreboard/actions/workflows/codeql.yml/badge.svg)](https://github.com/alex4108/scoreboard/actions/workflows/codeql.yml)
+[![Release](https://github.com/alex4108/scoreboard/actions/workflows/release.yml/badge.svg)](https://github.com/alex4108/scoreboard/actions/workflows/release.yml)
+[![Test Release](https://github.com/alex4108/scoreboard/actions/workflows/test.yml/badge.svg)](https://github.com/alex4108/scoreboard/actions/workflows/test.yml)
 [![GitHub issues](https://img.shields.io/github/issues/alex4108/scoreboard)](https://github.com/alex4108/scoreboard/issues)
 [![GitHub forks](https://img.shields.io/github/forks/alex4108/scoreboard)](https://github.com/alex4108/scoreboard/network)
 [![GitHub stars](https://img.shields.io/github/stars/alex4108/scoreboard)](https://github.com/alex4108/scoreboard/stargazers)

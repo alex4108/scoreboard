@@ -44,7 +44,7 @@ jobs:
             azurebot-docker-cache-
         continue-on-error: true
       - name: Build the Docker image
-        run: export AZURE_BOT_TAG='${{steps.tag_version.outputs.new_tag}}' && make docker-release
+        run: export SCOREBOARD_TAG='${{steps.tag_version.outputs.new_tag}}' && make docker-release
   deploy:
     needs: build
     runs-on: ubuntu-latest
