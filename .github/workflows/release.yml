@@ -60,8 +60,10 @@ jobs:
           resource-group: "k8s-homelab"
           cluster-name: "homelab"
         id: login
-      - name: Replace kubernetes namespace & environment
-        run: sed -i 's/default/scendingsupport/g' "s/GIT_SHA/${{ needs.build.outputs.tag }}/g" kube-manifest.yml
+      - name: Replace kubernetes namespace
+        run: sed -i 's/default/scendingsupport/g' kube-manifest.yml
+      - name: Replace kubernetes container tag
+        run: sed -i 's/GIT_SHA/${{ needs.build.outputs.tag }}/g' kube-manifest.yml
       - name: Deploy to Kubernetes
         uses: Azure/k8s-deploy@v4.4
         timeout-minutes: 5
