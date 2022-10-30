@@ -83,7 +83,7 @@ sed -i 's/default/YOUR_NAMESPACE/g' kube-manifest.yml
 
 #### In-cluster MongoDB
 
-Todo...
+Todo... Eventually
 
 #### Remote MongoDB
 
