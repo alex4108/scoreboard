@@ -62,7 +62,7 @@ jobs:
         timeout-minutes: 5
         with:
           action: "deploy"
-          namespace: "default"
+          namespace: "scendingsupport"
           strategy: "basic"
           manifests: |
             kube-manifest.yml
