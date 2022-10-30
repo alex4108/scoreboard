@@ -12,7 +12,7 @@ permissions: "write-all"
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -38,7 +38,7 @@ jobs:
         run: export SCOREBOARD_TAG='${{ github.event.pull_request.head.sha }}' && make docker-release
   deploy:
     needs: build
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
