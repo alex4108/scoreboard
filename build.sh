@@ -2,9 +2,9 @@
 set -e
 
 cd backend
-bash build.sh
+bash build.sh $1
 cd ../
 
 cd frontend
-bash build.sh
+bash build.sh $1
 cd ../

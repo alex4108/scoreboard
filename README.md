@@ -63,6 +63,24 @@ When using TLS, the `frontend/nginx-ssl/` configuration file is used in place of
 
 ### Production (Kubernetes)
 
+First deploy a secret containing your mongodb connection string like such...
+
+```
+`kubectl create secret generic 
+mongodb
+--from-literal=connection_string="mongodb+srv://...." 
+```
+
+Then run a couple sed's on the kube-manifest.yml before applying the manifest.
+
+```
+
+export GIT_SHA=$(git rev-parse HEAD)
+sed -i 's/GIT_SHA/${GIT_SHA}/g' kube-manifest.yml
+
+# If you deploy in a different namespace
+sed -i 's/default/YOUR_NAMESPACE/g' kube-manifest.yml
+
 #### In-cluster MongoDB
 
 Todo...
@@ -86,6 +104,8 @@ I use this method for running my production environment on my RaspberryPi 2.  Fe
 # Frontend Environment Variables
 
 * `NODE_ENV`: Set automatically.  [See here](https://create-react-app.dev/docs/adding-custom-environment-variables/)
+* `BACKEND_HOST`: Defaults to scoreboard-backend.default.svc.cluster.local.  If you're running in an alternate kubernetes namespace, ensure this value is updated in the template before deployment.
+* `BACKEND_PORT`: The port the backend API is hosted at.  Defaults to 8080.
 
 #### Optional Environment Variables
 

@@ -1,30 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: scoreboard
-  namespace: scendingsupport
+  name: scoreboard-live
+  namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: scoreboard
+      name: scoreboard-live
   template:
     metadata:
       labels:
-        name: scoreboard
+        name: scoreboard-live
     spec:
       restartPolicy: Always
       containers:
       - name: frontend
-        image: alex4108/scoreboard-frontend:latest
+        image: alex4108/scoreboard-frontend:GIT_SHA
         ports:
         - containerPort: 80
           protocol: TCP
       - name: backend
-        image: alex4108/scoreboard-backend:latest
+        image: alex4108/scoreboard-backend:GIT_SHA
         env:
         - name: BACKEND_HOST
-          value: scoreboard-backend.schittkome.svc.cluster.local
+          value: scoreboard-live-backend.default.svc.cluster.local
         - name: mongoConnectionString
           valueFrom:
             secretKeyRef:
@@ -40,11 +40,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: scoreboard
-  namespace: scendingsupport
+  name: scoreboard-live
+  namespace: default
 spec:
   selector:
-    name: scoreboard
+    name: scoreboard-live
   ports:
   - protocol: TCP
     port: 80
@@ -54,11 +54,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: scoreboard-backend
-  namespace: scendingsupport
+  name: scoreboard-live-backend
+  namespace: default
 spec:
   selector:
-    name: scoreboard
+    name: scoreboard-live
   ports:
   - protocol: TCP
     port: 8080

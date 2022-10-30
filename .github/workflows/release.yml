@@ -1,0 +1,79 @@
+name: Release
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions: "write-all"
+
+concurrency:
+  group: "release"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.tag_version.outputs.new_tag }}
+      changelog: ${{ steps.tag_version.outputs.changelog }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Run Tests
+        run: make test
+      - name: Cache docker layers
+        uses: satackey/action-docker-layer-caching@v0.0.11
+        with:
+          key: azurebot-docker-cache-{hash}
+          restore-keys: |
+            azurebot-docker-cache-
+        continue-on-error: true
+      - name: Build the Docker image
+        run: export AZURE_BOT_TAG='${{steps.tag_version.outputs.new_tag}}' && make docker-release
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+      - name: Setup Kubectl
+        uses: Azure/setup-kubectl@v3
+      - name: Login to Azure
+        uses: azure/aks-set-context@v1
+        with:
+          creds: "${{ secrets.AZURE_CREDENTIALS }}"
+          resource-group: "k8s-homelab"
+          cluster-name: "homelab"
+        id: login
+      - name: Replace kubernetes namespace & environment
+        run: sed -i 's/default/scendingsupport/g' "s/GIT_SHA/${{ needs.build.outputs.tag }}/g" kube-manifest.yml
+      - name: Deploy to Kubernetes
+        uses: Azure/k8s-deploy@v4.4
+        timeout-minutes: 5
+        with:
+          action: "deploy"
+          namespace: "scendingsupport"
+          strategy: "basic"
+          manifests: |
+            kube-manifest.yml
+      - name: Create a GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ needs.build.outputs.tag }}
+          name: Release ${{ needs.build.outputs.tag }}
+          body: "${{ needs.build.outputs.changelog }}"
