@@ -2,8 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: scoreboard
+  namespace: scendingsupport
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       name: scoreboard
@@ -22,8 +23,14 @@ spec:
       - name: backend
         image: alex4108/scoreboard-backend:latest
         env:
+        - name: BACKEND_HOST
+          value: scoreboard-backend.schittkome.svc.cluster.local
         - name: mongoConnectionString
-          value: "mongodb+srv://FILL_THIS_IN"
+          valueFrom:
+            secretKeyRef:
+              name: mongodb
+              key: connection_string
+              optional: false 
         - name: corsOrigin
           value: "*"
         ports:
@@ -34,6 +41,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: scoreboard
+  namespace: scendingsupport
 spec:
   selector:
     name: scoreboard
@@ -41,12 +49,13 @@ spec:
   - protocol: TCP
     port: 80
     targetPort: 80
-  type: LoadBalancer
+  type: ClusterIP
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: scoreboard-backend
+  namespace: scendingsupport
 spec:
   selector:
     name: scoreboard
@@ -54,4 +63,4 @@ spec:
   - protocol: TCP
     port: 8080
     targetPort: 8080
-  type: LoadBalancer
+  type: ClusterIP
