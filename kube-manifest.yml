@@ -29,7 +29,7 @@ spec:
         - name: mongoConnectionString
           valueFrom:
             secretKeyRef:
-              name: mongodb
+              name: mongodb-live
               key: connection_string
               optional: false 
         - name: corsOrigin

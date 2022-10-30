@@ -67,7 +67,7 @@ First deploy a secret containing your mongodb connection string like such...
 
 ```
 kubectl create secret generic 
-mongodb
+mongodb-live
 --from-literal=connection_string="mongodb+srv://...." 
 ```
 
