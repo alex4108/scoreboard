@@ -8,8 +8,6 @@
 ![GitHub contributors](https://img.shields.io/github/contributors/alex4108/scoreboard)
 [![GitHub license](https://img.shields.io/github/license/alex4108/scoreboard)](https://github.com/alex4108/scoreboard/blob/master/LICENSE)
 ![Docker Pulls](https://img.shields.io/docker/pulls/alex4108/scoreboard-backend)
-[![Build Status](https://travis-ci.com/alex4108/scoreboard.svg?branch=main)](https://travis-ci.com/alex4108/scoreboard)
-
 
 This is a super simple "Scoreboard" app that lets us keep track of players and their scores while we're playing a game.  It persists player information between games and persists match history.  
 
@@ -68,7 +66,7 @@ When using TLS, the `frontend/nginx-ssl/` configuration file is used in place of
 First deploy a secret containing your mongodb connection string like such...
 
 ```
-`kubectl create secret generic 
+kubectl create secret generic 
 mongodb
 --from-literal=connection_string="mongodb+srv://...." 
 ```
@@ -76,12 +74,12 @@ mongodb
 Then run a couple sed's on the kube-manifest.yml before applying the manifest.
 
 ```
-
 export GIT_SHA=$(git rev-parse HEAD)
 sed -i 's/GIT_SHA/${GIT_SHA}/g' kube-manifest.yml
 
 # If you deploy in a different namespace
 sed -i 's/default/YOUR_NAMESPACE/g' kube-manifest.yml
+```
 
 #### In-cluster MongoDB
 
