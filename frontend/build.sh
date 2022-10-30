@@ -11,5 +11,5 @@ if [[ -z "$builders" ]]; then
 fi
 
 docker buildx use scoreboard
-docker buildx build --platform linux/amd64,linux/arm/v7 -t alex4108/scoreboard-frontend:$1 . --push
-docker buildx build --platform linux/amd64,linux/arm/v7 -f Dockerfile.tls -t alex4108/scoreboard-frontend-tls:$1 . --push
+docker buildx build --platform linux/amd64 -t alex4108/scoreboard-frontend:$1 . --push
+docker buildx build --platform linux/amd64 -f Dockerfile.tls -t alex4108/scoreboard-frontend-tls:$1 . --push
