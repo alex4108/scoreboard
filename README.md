@@ -49,7 +49,7 @@ Yarn will start a development server on [https://localhost:3000](https://localho
 
 * Docker
 * docker-compose
-* Supports docker engines for `linux/amd64` and `linux/arm/v7` architectures.  You can see my [notes](https://github.com/alex4108/scoreboard/issues/1) and [frontend/build.sh](https://github.com/alex4108/scoreboard/blob/main/frontend/build.sh) or [backend/build.sh](https://github.com/alex4108/scoreboard/blob/main/backend/build.sh) for how I set this up using [Travis-CI](https://travis-ci.com)
+* Supports docker engines for `linux/amd64`. __support for arm/v7 has been dropped!__  You can see my [notes](https://github.com/alex4108/scoreboard/issues/1) and [frontend/build.sh](https://github.com/alex4108/scoreboard/blob/main/frontend/build.sh) or [backend/build.sh](https://github.com/alex4108/scoreboard/blob/main/backend/build.sh) for how I set this up using [Travis-CI](https://travis-ci.com)
 
 By default, the container uses the configuration from `frontend/nginx/`.  The application will require port 80 to be available, however this can be modified in the docker-compose file to meet your needs.
 

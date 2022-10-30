@@ -14,4 +14,4 @@ ENV BACKEND_PORT 8080
 COPY --from=build-stage /app/build/ /usr/share/nginx/html
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf.tpl
 EXPOSE 80
-CMD ["envsubst", "<", "/etc/nginx/conf.d/default.conf.tpl", ">", "/etc/nginx/conf.d/default.conf", "nginx", "-g", "daemon off;"]
+CMD ["envsubst", "<", "/etc/nginx/conf.d/default.conf.tpl", ">", "/etc/nginx/conf.d/default.conf", "&&", "nginx", "-g", "daemon off;"]
